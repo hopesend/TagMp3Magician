@@ -84,27 +84,12 @@ namespace TagMp3Magician
             {
                 if (Contiene_Mp3(tvDirectorioMp3.SelectedNode.Tag.ToString()))
                 {
-                    album = new GenericAlbum();
-                    album.directorioAlbum = tvDirectorioMp3.SelectedNode.Tag.ToString() + "\\";
-                    nuevoAlbum.nombreAlbum = Path.GetFileName(tvDirectorioMp3.SelectedNode.Tag.ToString());
-                    foreach (string Archivo in Directory.GetFiles(tvDirectorioMp3.SelectedNode.Tag.ToString()))
-                    {
-                        Cancion nuevaCancion = new Cancion();
-                        nuevaCancion.directorioPadre = Path.GetDirectoryName(Archivo) + "\\";
-                        nuevaCancion.nombreArchivo = Path.GetFileName(Archivo);
-                        nuevaCancion.nuevoNombrePista = nuevaCancion.nombreArchivo;
-                        nuevaCancion.nombrePista = nuevaCancion.nombreArchivo;
-                        if (Path.GetExtension(Archivo) == ".mp3")
-                        {
-                            nuevaCancion.esMp3 = true;
-                        }
-                        nuevoAlbum.Canciones.Add(nuevaCancion.nuevoNombrePista, nuevaCancion);
-                    }
+                    album = new GenericAlbum(@tvDirectorioMp3.SelectedNode.Tag.ToString());
 
-                    ListaImagenes.Images.Clear();
-                    Caratulas.Clear();
-                    Inicializar_Valores_ListView();
-                    Inicializar_Valores_Imagenes();
+                    //ListaImagenes.Images.Clear();
+                    //Caratulas.Clear();
+                    //Inicializar_Valores_ListView();
+                    //Inicializar_Valores_Imagenes();
                 }
             }
             else

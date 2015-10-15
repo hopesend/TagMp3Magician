@@ -1,59 +1,107 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.IO;
 
 namespace TagMp3Magician
 {
+    /// <summary>
+    /// Clase Contenedora de la informacion de un archivo mp3 en un album especifico
+    /// </summary>
     public class GenericSong
     {
-        //Contenedor del nuevo nombre de la Cancion
-        private string nombreCancionNuevo;
-        public string NombreCancionNuevo
+
+        #region VARIABLES
+
+        /// <summary>
+        /// valor tipo string con el titulo de la pista
+        /// </summary>
+        private string titulo;
+        /// <summary>
+        /// Obtiene el titulo de la pista mp3
+        /// </summary>
+        /// <value>
+        /// valor tipo string con el titulo de la pista
+        /// </value>
+        public string Titulo
         {
-            get { return nombreCancionNuevo; }
-            set { nombreCancionNuevo = value; }
+            get { return titulo; }
+            set 
+            { 
+                titulo = value;
+                Obtener_Indice(titulo);
+            }
         }
 
-        //Contenedor del nombre del Archivo Inicial
-        private string nombreCancionAnterior;
-        public string NombreCancionAnterior
+        /// <summary>
+        /// valor tipo int con la posicion de la cancion en el album (numero de pista)
+        /// </summary>
+        private int indice;
+        /// <summary>
+        /// Obtiene el numero de pista de la cancion
+        /// </summary>
+        /// <value>
+        /// valor tipo int con la posicion de la cancion en el album (numero de pista)
+        /// </value>
+        public int Indice
         {
-            get { return nombreCancionAnterior; }
-            set { nombreCancionAnterior = value; }
+            get { return indice; }
+            set { indice = value; }
         }
 
-        //Contenedor del indice de la cancion
-        private int indiceCancion;
-        public int IndiceCancion
+        /// <summary>
+        /// valor tipo Image con la caratula de la cancion
+        /// </summary>
+        private Image caratulaAlbum;
+        /// <summary>
+        /// Obtiene la caratula de la cancion
+        /// </summary>
+        /// <value>
+        /// valor tipo Image con la caratula de la cancion
+        /// </value>
+        public Image CaratulaAlbum
         {
-            get { return indiceCancion; }
-            set { indiceCancion = value; }
+            get { return caratulaAlbum; }
+            set { caratulaAlbum = value; }
         }
 
-        //Contenedor de booleana para diferenciar pistas mp3
-        private bool esMp3;
-        public bool EsMp3
-        {
-            get { return esMp3; }
-            set { esMp3 = value; }
-        }
+        #endregion
+
+        #region CONSTRUCTORES
 
         public GenericSong()
         {
         }
 
-        public GenericSong(string nombreCancion, int indice)
+        public GenericSong(string nombreCancion)
         {
-            NombreCancionAnterior = nombreCancion;
-            NombreCancionNuevo = nombreCancion;
-            IndiceCancion = indice;
+            Titulo = nombreCancion;
 
-            if (Path.GetExtension(nombreCancion).Equals(".mp3"))
-                EsMp3 = true;
-            else
-                EsMp3 = false;
+            //obtener tag
         }
+
+        #endregion
+
+        #region METODOS
+
+        private void Obtener_Indice(string titulo)
+        {
+            Indice = Buscar_Indice(titulo);
+        }
+
+        private int Buscar_Indice (string texto)
+        {
+            for (int cont=0; cont < texto.Length; cont++)
+            {
+                if(!char.IsDigit(texto[cont]))
+                    return (cont > 0 ? int.Parse(texto.Remove(cont)) : 0);
+            }
+
+            return 0;
+        }
+
+        #endregion
     }
 }
