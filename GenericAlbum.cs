@@ -117,6 +117,38 @@ namespace TagMp3Magician
         }
 
         /// <summary>
+        /// valor tipo string con el estilo del album
+        /// </summary>
+        private string estilo;
+        /// <summary>
+        /// Obtiene el estilo del album
+        /// </summary>
+        /// <value>
+        /// valor tipo string con el estilo del album
+        /// </value>
+        public string Estilo
+        {
+            get { return estilo; }
+            set { estilo = value; }
+        }
+
+        /// <summary>
+        /// valor tipo string con el comentario del album
+        /// </summary>
+        private string comentario;
+        /// <summary>
+        /// Obtiene el comentario del album
+        /// </summary>
+        /// <value>
+        /// valor tipo string con el comentario del album
+        /// </value>
+        public string Comentario
+        {
+            get { return comentario; }
+            set { comentario = value; }
+        }
+
+        /// <summary>
         /// valor tipo ListaGenerica con las GenericSong que componen el album
         /// </summary>
         private List<GenericSong> listaCanciones;
