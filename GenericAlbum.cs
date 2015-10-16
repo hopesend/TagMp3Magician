@@ -100,14 +100,32 @@ namespace TagMp3Magician
             set { titulo = value; }
         }
 
+        /// <summary>
+        /// valor tipo Image con la caratula del album
+        /// </summary>
         private Image caratulaAlbum;
+        /// <summary>
+        /// Obtiene la caratula del album
+        /// </summary>
+        /// <value>
+        /// valor tipo Image con la caratula del album
+        /// </value>
         public Image CaratulaAlbum
         {
             get { return caratulaAlbum; }
             set { caratulaAlbum = value; }
         }
 
+        /// <summary>
+        /// valor tipo ListaGenerica con las GenericSong que componen el album
+        /// </summary>
         private List<GenericSong> listaCanciones;
+        /// <summary>
+        /// Obtiene la lista de canciones que componen el album
+        /// </summary>
+        /// <value>
+        /// valor tipo ListaGenerica con las GenericSong que componen el album
+        /// </value>
         public List<GenericSong> ListaCanciones
         {
             get { return listaCanciones; }
@@ -140,10 +158,26 @@ namespace TagMp3Magician
         {
             foreach (string archivoAlbum in Directory.GetFiles(pathAlbum, "*.*", SearchOption.TopDirectoryOnly).Where(s => s.EndsWith(".mp3")))
             {
-                listaCanciones.Add(new GenericSong(Path.GetFileName(archivoAlbum)));
+                listaCanciones.Add(new GenericSong(Path.GetFileName(archivoAlbum), archivoAlbum));
             }
 
-            //Cotejar artista, año y titulo
+            if(Artista.Equals(string.Empty))
+                Artista = (listaCanciones.FindAll(x => x.tagCancion.FirstPerformer == listaCanciones[0].tagCancion.FirstPerformer).Count().Equals(listaCanciones.Count())) ? listaCanciones[0].tagCancion.FirstPerformer : "<Desconocido>";
+
+            if(AnyoGrabacion.Equals(0))
+                AnyoGrabacion = (listaCanciones.FindAll(x => (int)x.tagCancion.Year == (int)listaCanciones[0].tagCancion.Year).Count().Equals(listaCanciones.Count())) ? (int)listaCanciones[0].tagCancion.Year : 0;
+
+            if(Titulo.Equals(string.Empty))
+                Titulo = (listaCanciones.FindAll(x => x.tagCancion.Album == listaCanciones[0].tagCancion.Album).Count().Equals(listaCanciones.Count())) ? listaCanciones[0].tagCancion.Album : "<Desconocido>";
+
+            try
+            {
+                CaratulaAlbum = (listaCanciones.FindAll(x => x.CaratulaAlbum.ToString() == listaCanciones[0].CaratulaAlbum.ToString()).Count().Equals(listaCanciones.Count())) ? listaCanciones[0].CaratulaAlbum : null;
+            }
+            catch
+            {
+                CaratulaAlbum = null;
+            }
         }
 
         private void Desglosar_Nombre(string nombre)
@@ -152,38 +186,6 @@ namespace TagMp3Magician
 
             switch(aux.Length)
             {
-                case 1:
-                    {
-                        if(EsNumerico(aux[0].Trim()))
-                            anyoGrabacion = int.Parse(aux[0].Trim());
-                        else
-                            Artista = aux[0].Trim();
-                        break;
-                    }
-
-                case 2:
-                    {
-                        if (EsNumerico(aux[0].Trim()))
-                        {
-                            anyoGrabacion = int.Parse(aux[0].Trim());
-                            Artista = aux[1].Trim();
-                        }
-                        else
-                        {
-                            if (EsNumerico(aux[1].Trim()))
-                            {
-                                anyoGrabacion = int.Parse(aux[1].Trim());
-                                Artista = aux[0].Trim();
-                            }
-                            else
-                            {
-                                Artista = aux[0].Trim();
-                                Titulo = aux[1].Trim();
-                            }
-                        }
-                        break;
-                    }
-
                 case 3:
                     {
                         Artista = aux[0].Trim();

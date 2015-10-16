@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.IO;
+using TagLib;
 
 namespace TagMp3Magician
 {
@@ -28,11 +29,7 @@ namespace TagMp3Magician
         public string Titulo
         {
             get { return titulo; }
-            set 
-            { 
-                titulo = value;
-                Obtener_Indice(titulo);
-            }
+            set { titulo = value; }
         }
 
         /// <summary>
@@ -67,6 +64,8 @@ namespace TagMp3Magician
             set { caratulaAlbum = value; }
         }
 
+        public Tag tagCancion;
+
         #endregion
 
         #region CONSTRUCTORES
@@ -75,11 +74,10 @@ namespace TagMp3Magician
         {
         }
 
-        public GenericSong(string nombreCancion)
+        public GenericSong(string nombreCancion, string ruta)
         {
             Titulo = nombreCancion;
-
-            //obtener tag
+            Obtener_Tag(ruta);
         }
 
         #endregion
@@ -100,6 +98,29 @@ namespace TagMp3Magician
             }
 
             return 0;
+        }
+
+        private void Obtener_Tag(string ruta)
+        {
+            TagLib.File PistaMp3 = TagLib.File.Create(ruta);
+
+            indice = PistaMp3.Tag.Track.Equals(0) ? indice = Buscar_Indice(Titulo) : indice = (int)PistaMp3.Tag.Track;
+
+            if (!PistaMp3.Tag.Title.Equals(string.Empty))
+                Titulo = PistaMp3.Tag.Title;
+
+            try 
+            { 
+                CaratulaAlbum = Image.FromStream(new MemoryStream(PistaMp3.Tag.Pictures.ToList().Find(x => x.Type.ToString() == "FrontCover").Data.Data)); 
+            }
+            catch
+            {
+                CaratulaAlbum = null;
+            }
+
+            tagCancion = PistaMp3.Tag;
+
+            PistaMp3.Dispose();
         }
 
         #endregion

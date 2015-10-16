@@ -7,3 +7,6 @@ c:\users\hopesend\documents\visual studio 2013\Projects\TagMp3Magician\TagMp3Mag
 c:\users\hopesend\documents\visual studio 2013\Projects\TagMp3Magician\TagMp3Magician\obj\Debug\TagMp3Magician.csproj.GenerateResource.Cache
 c:\users\hopesend\documents\visual studio 2013\Projects\TagMp3Magician\TagMp3Magician\obj\Debug\TagMp3Magician.exe
 c:\users\hopesend\documents\visual studio 2013\Projects\TagMp3Magician\TagMp3Magician\obj\Debug\TagMp3Magician.pdb
+C:\Users\Hopesend\Documents\Visual Studio 2013\Projects\TagMp3Magician\TagMp3Magician\bin\Debug\policy.2.0.taglib-sharp.dll
+C:\Users\Hopesend\Documents\Visual Studio 2013\Projects\TagMp3Magician\TagMp3Magician\bin\Debug\taglib-sharp.dll
+C:\Users\Hopesend\Documents\Visual Studio 2013\Projects\TagMp3Magician\TagMp3Magician\bin\Debug\policy.2.0.taglib-sharp.config
