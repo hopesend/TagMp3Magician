@@ -66,7 +66,6 @@ namespace TagMp3Magician
             set { artista = value; }
         }
 
-
         /// <summary>
         /// valor tipo int con el año de grabacion del album
         /// </summary>
@@ -82,7 +81,6 @@ namespace TagMp3Magician
             get { return anyoGrabacion; }
             set { anyoGrabacion = value; }
         }
-
 
         /// <summary>
         /// valor tipo string con el titulo del album
@@ -149,6 +147,22 @@ namespace TagMp3Magician
         }
 
         /// <summary>
+        /// valor tipo int con el bitrate de compresion medio del album
+        /// </summary>
+        private int bitrate;
+        /// <summary>
+        /// Obtiene el bitrate medio dle album
+        /// </summary>
+        /// <value>
+        /// valor tipo int con el bitrate de compresion medio del album
+        /// </value>
+        public int Bitrate
+        {
+            get { return bitrate; }
+            set { bitrate = value; }
+        }
+
+        /// <summary>
         /// valor tipo ListaGenerica con las GenericSong que componen el album
         /// </summary>
         private List<GenericSong> listaCanciones;
@@ -193,7 +207,7 @@ namespace TagMp3Magician
                 listaCanciones.Add(new GenericSong(Path.GetFileName(archivoAlbum), archivoAlbum));
             }
 
-            if(Artista.Equals(string.Empty))
+            if(Artista == null)
                 Artista = (listaCanciones.FindAll(x => x.tagCancion.FirstPerformer == listaCanciones[0].tagCancion.FirstPerformer).Count().Equals(listaCanciones.Count())) ? listaCanciones[0].tagCancion.FirstPerformer : "<Desconocido>";
 
             if(AnyoGrabacion.Equals(0))
@@ -210,6 +224,12 @@ namespace TagMp3Magician
             {
                 CaratulaAlbum = null;
             }
+
+            Comentario = (listaCanciones.FindAll(x => x.tagCancion.Comment == listaCanciones[0].tagCancion.Comment).Count().Equals(listaCanciones.Count())) ? listaCanciones[0].tagCancion.Comment : "<Desconocido>";
+
+            Estilo = (listaCanciones.FindAll(x => x.tagCancion.FirstGenre == listaCanciones[0].tagCancion.FirstGenre).Count().Equals(listaCanciones.Count())) ? listaCanciones[0].tagCancion.FirstGenre : "<Desconocido>";
+
+            Bitrate = (listaCanciones.FindAll(x => x.propiedades.AudioBitrate == listaCanciones[0].propiedades.AudioBitrate).Count().Equals(listaCanciones.Count())) ? listaCanciones[0].propiedades.AudioBitrate : 0;
         }
 
         private void Desglosar_Nombre(string nombre)

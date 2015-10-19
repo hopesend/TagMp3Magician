@@ -17,6 +17,17 @@ namespace TagMp3Magician
         #region VARIABLES
 
         /// <summary>
+        /// The pista
+        /// </summary>
+        private string pista;
+
+        public string Pista
+        {
+            get { return pista; }
+            set { pista = value; }
+        }
+
+        /// <summary>
         /// valor tipo string con el titulo de la pista
         /// </summary>
         private string titulo;
@@ -64,7 +75,12 @@ namespace TagMp3Magician
             set { caratulaAlbum = value; }
         }
 
+        /// <summary>
+        /// Objeto contenedor del tag de la cancion
+        /// </summary>
         public Tag tagCancion;
+
+        public TagLib.Properties propiedades;
 
         #endregion
 
@@ -76,7 +92,7 @@ namespace TagMp3Magician
 
         public GenericSong(string nombreCancion, string ruta)
         {
-            Titulo = nombreCancion;
+            Pista = nombreCancion;
             Obtener_Tag(ruta);
         }
 
@@ -119,6 +135,7 @@ namespace TagMp3Magician
             }
 
             tagCancion = PistaMp3.Tag;
+            propiedades = PistaMp3.Properties;
 
             PistaMp3.Dispose();
         }

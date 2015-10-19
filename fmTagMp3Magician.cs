@@ -86,6 +86,20 @@ namespace TagMp3Magician
                 {
                     album = new GenericAlbum(@tvDirectorioMp3.SelectedNode.Tag.ToString());
 
+                    tbArtista.Text = album.Artista;
+                    tbAlbum.Text = album.Titulo;
+                    tbAnyo.Text = album.AnyoGrabacion.ToString();
+                    tbEstilo.Text = album.Estilo;
+                    tbComentario.Text = album.Comentario;
+                    tbBitrate.Text = album.Bitrate.ToString();
+
+                    pnCambios.Enabled = true;
+                    foreach(GenericSong cancion in album.Devolver_Canciones())
+                    {
+                        ListViewItem item = new ListViewItem();
+                        item.Text = cancion.Pista;
+                        lvPistas.Items.Add(item);
+                    }
                     //ListaImagenes.Images.Clear();
                     //Caratulas.Clear();
                     //Inicializar_Valores_ListView();
