@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using System.Linq;
 
 namespace TagMp3Magician
 {
@@ -34,8 +33,6 @@ namespace TagMp3Magician
 
         private void fmTagMp3Magician_Load(object sender, EventArgs e)
         {
-            this.Size = new Size(pnIzquierda.Size.Width + btMostrarImagenes.Size.Width + 16, this.Size.Height);
-
             // Cargamos todas la unidades de Disco de la maquina en un ComboBox
             foreach (string Unidad in Directory.GetLogicalDrives())
             {
@@ -94,16 +91,14 @@ namespace TagMp3Magician
                     tbBitrate.Text = album.Bitrate.ToString();
 
                     pnCambios.Enabled = true;
+                    lvPistas.Items.Clear();
                     foreach(GenericSong cancion in album.Devolver_Canciones())
                     {
                         ListViewItem item = new ListViewItem();
                         item.Text = cancion.Pista;
+                        item.Tag = cancion;
                         lvPistas.Items.Add(item);
                     }
-                    //ListaImagenes.Images.Clear();
-                    //Caratulas.Clear();
-                    //Inicializar_Valores_ListView();
-                    //Inicializar_Valores_Imagenes();
                 }
             }
             else
@@ -119,6 +114,55 @@ namespace TagMp3Magician
                 e.Node.Expand();
             }
         }
+
+        private void lvPistas_ItemActivate(object sender, EventArgs e)
+        {
+            tbModificar.Text = lvPistas.SelectedItems[0].Text;
+        }
+
+        private void btModificar_Click(object sender, EventArgs e)
+        {
+            lvPistas.SelectedItems[0].Text = tbModificar.Text;
+        }
+        
+        private void lvPistas_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                foreach (ListViewItem item in lvPistas.SelectedItems)
+                {
+                    GenericSong cancion = (GenericSong)item.Tag;
+                    File.Delete(cancion.Ruta);
+                    lvPistas.Items.Remove(item);
+                }
+            }
+        }
+
+        private void btCambiar_Click(object sender, EventArgs e)
+        {
+            if (tbCaracterAntes.Text == "" && tbCaracterDespues.Text == "")
+            {
+                //Si pulsamos el boton cambiar y los textbox asociados estan vacios lanzo mensaje de error
+                MessageBox.Show("Valores No Introducidos");
+                tbCaracterAntes.Focus();
+            }
+            else
+            {
+                //Si no hago el cambio de caracteres segun las pautas de los textbox
+                foreach (ListViewItem item in lvPistas.Items)
+                {
+                    if(item.Text.Contains(tbCaracterAntes.Text))
+                        item.Text = item.Text.Replace(tbCaracterAntes.Text, tbCaracterDespues.Text);
+                }
+            }
+        }
+
+        private void btTransformar_Click(object sender, EventArgs e)
+        {
+            PonerPunto();
+            PonerMayusculas();
+        }
+
 
         #endregion
 
@@ -164,6 +208,45 @@ namespace TagMp3Magician
         private bool Contiene_Mp3(string path)
         {
             return (Directory.GetFiles(path, "*.*", SearchOption.TopDirectoryOnly).Where(s => s.EndsWith(".mp3")).Count() > 0);
+        }
+
+        private void PonerPunto()
+        {
+            // Recorremos la lista del Archivos en el ListView
+            foreach (ListViewItem item in lvPistas.Items)
+            {
+                // Comprobamos que tenga un punto tras el numero de pista, si no lo tiene lo inserta
+                if (item.Text[2] != '.')
+                {
+                    // Insertamos el Punto
+                    item.Text = item.Text.Insert(2, ".");
+                }
+            }
+        }
+
+        private void PonerMayusculas()
+        {
+            //Buscamos en la Lista del directorio
+            foreach (ListViewItem item in lvPistas.Items)
+            {
+                //Recorremos el string caracter a caracter
+                for (int cont2 = 0; cont2 < item.Text.Length; cont2++)
+                {
+                    switch (item.Text[cont2])
+                    {
+                        case ' ':
+                        case '(':
+                        case '[':
+                        case '-':
+                            {
+                                string CaracterMinuscula = item.Text[cont2] + item.Text[cont2 + 1].ToString();
+                                string CaracterMayuscula = item.Text[cont2] + item.Text[cont2 + 1].ToString().ToUpper();
+                                item.Text = item.Text.Replace(CaracterMinuscula, CaracterMayuscula);
+                                break;
+                            }
+                    }
+                }
+            }
         }
 
         #endregion

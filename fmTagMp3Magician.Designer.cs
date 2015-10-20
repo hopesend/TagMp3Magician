@@ -28,15 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(fmTagMp3Magician));
             this.pnPrimario = new System.Windows.Forms.Panel();
             this.pnDerecha = new System.Windows.Forms.Panel();
-            this.pnCentro = new System.Windows.Forms.Panel();
-            this.btMostrarImagenes = new System.Windows.Forms.Button();
+            this.pnImagenes = new System.Windows.Forms.Panel();
+            this.btBuscar = new System.Windows.Forms.Button();
+            this.gbBusqueda = new System.Windows.Forms.GroupBox();
+            this.cbAmazon = new System.Windows.Forms.CheckBox();
+            this.cbGoogle = new System.Windows.Forms.CheckBox();
+            this.lvImagenes = new System.Windows.Forms.ListView();
+            this.pbImagen1 = new System.Windows.Forms.PictureBox();
             this.pnIzquierda = new System.Windows.Forms.Panel();
             this.pnPistas = new System.Windows.Forms.Panel();
             this.cbUnidadesDisco = new System.Windows.Forms.ComboBox();
-            this.btBorrar = new System.Windows.Forms.Button();
             this.btModificar = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.tbModificar = new System.Windows.Forms.TextBox();
@@ -63,8 +68,13 @@
             this.laEstilo = new System.Windows.Forms.Label();
             this.laComentario = new System.Windows.Forms.Label();
             this.laArtista = new System.Windows.Forms.Label();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.btGuardar = new System.Windows.Forms.Button();
             this.pnPrimario.SuspendLayout();
-            this.pnCentro.SuspendLayout();
+            this.pnDerecha.SuspendLayout();
+            this.pnImagenes.SuspendLayout();
+            this.gbBusqueda.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbImagen1)).BeginInit();
             this.pnIzquierda.SuspendLayout();
             this.pnPistas.SuspendLayout();
             this.pnCambios.SuspendLayout();
@@ -74,40 +84,97 @@
             // pnPrimario
             // 
             this.pnPrimario.Controls.Add(this.pnDerecha);
-            this.pnPrimario.Controls.Add(this.pnCentro);
             this.pnPrimario.Controls.Add(this.pnIzquierda);
             this.pnPrimario.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnPrimario.Location = new System.Drawing.Point(0, 0);
             this.pnPrimario.Name = "pnPrimario";
-            this.pnPrimario.Size = new System.Drawing.Size(941, 589);
+            this.pnPrimario.Size = new System.Drawing.Size(1078, 589);
             this.pnPrimario.TabIndex = 0;
             // 
             // pnDerecha
             // 
+            this.pnDerecha.Controls.Add(this.pnImagenes);
             this.pnDerecha.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnDerecha.Location = new System.Drawing.Point(613, 0);
+            this.pnDerecha.Location = new System.Drawing.Point(573, 0);
             this.pnDerecha.Name = "pnDerecha";
-            this.pnDerecha.Size = new System.Drawing.Size(328, 589);
+            this.pnDerecha.Size = new System.Drawing.Size(505, 589);
             this.pnDerecha.TabIndex = 2;
             // 
-            // pnCentro
+            // pnImagenes
             // 
-            this.pnCentro.Controls.Add(this.btMostrarImagenes);
-            this.pnCentro.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pnCentro.Location = new System.Drawing.Point(573, 0);
-            this.pnCentro.Name = "pnCentro";
-            this.pnCentro.Size = new System.Drawing.Size(40, 589);
-            this.pnCentro.TabIndex = 1;
+            this.pnImagenes.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.pnImagenes.Controls.Add(this.btGuardar);
+            this.pnImagenes.Controls.Add(this.btBuscar);
+            this.pnImagenes.Controls.Add(this.gbBusqueda);
+            this.pnImagenes.Controls.Add(this.lvImagenes);
+            this.pnImagenes.Controls.Add(this.pbImagen1);
+            this.pnImagenes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnImagenes.Enabled = false;
+            this.pnImagenes.Location = new System.Drawing.Point(0, 0);
+            this.pnImagenes.Name = "pnImagenes";
+            this.pnImagenes.Size = new System.Drawing.Size(505, 589);
+            this.pnImagenes.TabIndex = 91;
             // 
-            // btMostrarImagenes
+            // btBuscar
             // 
-            this.btMostrarImagenes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btMostrarImagenes.Image = ((System.Drawing.Image)(resources.GetObject("btMostrarImagenes.Image")));
-            this.btMostrarImagenes.Location = new System.Drawing.Point(0, 0);
-            this.btMostrarImagenes.Name = "btMostrarImagenes";
-            this.btMostrarImagenes.Size = new System.Drawing.Size(40, 589);
-            this.btMostrarImagenes.TabIndex = 0;
-            this.btMostrarImagenes.UseVisualStyleBackColor = true;
+            this.btBuscar.Image = ((System.Drawing.Image)(resources.GetObject("btBuscar.Image")));
+            this.btBuscar.Location = new System.Drawing.Point(445, 108);
+            this.btBuscar.Name = "btBuscar";
+            this.btBuscar.Size = new System.Drawing.Size(54, 44);
+            this.btBuscar.TabIndex = 16;
+            this.btBuscar.UseVisualStyleBackColor = true;
+            // 
+            // gbBusqueda
+            // 
+            this.gbBusqueda.Controls.Add(this.cbAmazon);
+            this.gbBusqueda.Controls.Add(this.cbGoogle);
+            this.gbBusqueda.Location = new System.Drawing.Point(159, 104);
+            this.gbBusqueda.Name = "gbBusqueda";
+            this.gbBusqueda.Size = new System.Drawing.Size(280, 48);
+            this.gbBusqueda.TabIndex = 15;
+            this.gbBusqueda.TabStop = false;
+            this.gbBusqueda.Text = "Seleccion de Busqueda";
+            // 
+            // cbAmazon
+            // 
+            this.cbAmazon.AutoSize = true;
+            this.cbAmazon.Location = new System.Drawing.Point(92, 19);
+            this.cbAmazon.Name = "cbAmazon";
+            this.cbAmazon.Size = new System.Drawing.Size(64, 17);
+            this.cbAmazon.TabIndex = 1;
+            this.cbAmazon.Text = "Amazon";
+            this.cbAmazon.UseVisualStyleBackColor = true;
+            // 
+            // cbGoogle
+            // 
+            this.cbGoogle.AutoSize = true;
+            this.cbGoogle.Location = new System.Drawing.Point(6, 19);
+            this.cbGoogle.Name = "cbGoogle";
+            this.cbGoogle.Size = new System.Drawing.Size(60, 17);
+            this.cbGoogle.TabIndex = 0;
+            this.cbGoogle.Text = "Google";
+            this.cbGoogle.UseVisualStyleBackColor = true;
+            // 
+            // lvImagenes
+            // 
+            this.lvImagenes.LargeImageList = this.imageList1;
+            this.lvImagenes.Location = new System.Drawing.Point(3, 160);
+            this.lvImagenes.Name = "lvImagenes";
+            this.lvImagenes.Size = new System.Drawing.Size(496, 395);
+            this.lvImagenes.TabIndex = 12;
+            this.lvImagenes.UseCompatibleStateImageBehavior = false;
+            // 
+            // pbImagen1
+            // 
+            this.pbImagen1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pbImagen1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pbImagen1.ErrorImage = ((System.Drawing.Image)(resources.GetObject("pbImagen1.ErrorImage")));
+            this.pbImagen1.Location = new System.Drawing.Point(3, 3);
+            this.pbImagen1.Name = "pbImagen1";
+            this.pbImagen1.Size = new System.Drawing.Size(150, 150);
+            this.pbImagen1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbImagen1.TabIndex = 7;
+            this.pbImagen1.TabStop = false;
             // 
             // pnIzquierda
             // 
@@ -123,7 +190,6 @@
             // 
             this.pnPistas.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.pnPistas.Controls.Add(this.cbUnidadesDisco);
-            this.pnPistas.Controls.Add(this.btBorrar);
             this.pnPistas.Controls.Add(this.btModificar);
             this.pnPistas.Controls.Add(this.label3);
             this.pnPistas.Controls.Add(this.tbModificar);
@@ -144,23 +210,15 @@
             this.cbUnidadesDisco.TabIndex = 98;
             this.cbUnidadesDisco.SelectionChangeCommitted += new System.EventHandler(this.cbUnidadesDisco_SelectionChangeCommitted);
             // 
-            // btBorrar
-            // 
-            this.btBorrar.Location = new System.Drawing.Point(411, 404);
-            this.btBorrar.Name = "btBorrar";
-            this.btBorrar.Size = new System.Drawing.Size(75, 23);
-            this.btBorrar.TabIndex = 97;
-            this.btBorrar.Text = "Borrar";
-            this.btBorrar.UseVisualStyleBackColor = true;
-            // 
             // btModificar
             // 
-            this.btModificar.Location = new System.Drawing.Point(330, 404);
+            this.btModificar.Location = new System.Drawing.Point(495, 404);
             this.btModificar.Name = "btModificar";
             this.btModificar.Size = new System.Drawing.Size(75, 23);
             this.btModificar.TabIndex = 96;
             this.btModificar.Text = "Modificar";
             this.btModificar.UseVisualStyleBackColor = true;
+            this.btModificar.Click += new System.EventHandler(this.btModificar_Click);
             // 
             // label3
             // 
@@ -175,7 +233,7 @@
             // 
             this.tbModificar.Location = new System.Drawing.Point(330, 383);
             this.tbModificar.Name = "tbModificar";
-            this.tbModificar.Size = new System.Drawing.Size(234, 20);
+            this.tbModificar.Size = new System.Drawing.Size(240, 20);
             this.tbModificar.TabIndex = 94;
             // 
             // tvDirectorioMp3
@@ -188,15 +246,18 @@
             // 
             // lvPistas
             // 
+            this.lvPistas.Activation = System.Windows.Forms.ItemActivation.OneClick;
             this.lvPistas.Alignment = System.Windows.Forms.ListViewAlignment.SnapToGrid;
             this.lvPistas.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lvPistas.Location = new System.Drawing.Point(239, 4);
             this.lvPistas.Name = "lvPistas";
-            this.lvPistas.Size = new System.Drawing.Size(325, 368);
+            this.lvPistas.Size = new System.Drawing.Size(334, 368);
             this.lvPistas.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.lvPistas.TabIndex = 0;
             this.lvPistas.UseCompatibleStateImageBehavior = false;
             this.lvPistas.View = System.Windows.Forms.View.List;
+            this.lvPistas.ItemActivate += new System.EventHandler(this.lvPistas_ItemActivate);
+            this.lvPistas.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvPistas_KeyDown);
             // 
             // pnCambios
             // 
@@ -232,6 +293,7 @@
             this.btTransformar.Size = new System.Drawing.Size(134, 126);
             this.btTransformar.TabIndex = 80;
             this.btTransformar.UseVisualStyleBackColor = true;
+            this.btTransformar.Click += new System.EventHandler(this.btTransformar_Click);
             // 
             // panel2
             // 
@@ -272,6 +334,7 @@
             this.btCambiar.TabIndex = 60;
             this.btCambiar.Text = "Cambiar";
             this.btCambiar.UseVisualStyleBackColor = true;
+            this.btCambiar.Click += new System.EventHandler(this.btCambiar_Click);
             // 
             // tbCaracterAntes
             // 
@@ -396,17 +459,37 @@
             this.laArtista.TabIndex = 72;
             this.laArtista.Text = "Artista";
             // 
+            // imageList1
+            // 
+            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
+            this.imageList1.ImageSize = new System.Drawing.Size(100, 100);
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // btGuardar
+            // 
+            this.btGuardar.Enabled = false;
+            this.btGuardar.Location = new System.Drawing.Point(424, 561);
+            this.btGuardar.Name = "btGuardar";
+            this.btGuardar.Size = new System.Drawing.Size(75, 23);
+            this.btGuardar.TabIndex = 31;
+            this.btGuardar.Text = "Guardar";
+            this.btGuardar.UseVisualStyleBackColor = true;
+            // 
             // fmTagMp3Magician
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(941, 589);
+            this.ClientSize = new System.Drawing.Size(1078, 589);
             this.Controls.Add(this.pnPrimario);
             this.Name = "fmTagMp3Magician";
             this.Text = "Tag Mp3 Magician v1.0.0";
             this.Load += new System.EventHandler(this.fmTagMp3Magician_Load);
             this.pnPrimario.ResumeLayout(false);
-            this.pnCentro.ResumeLayout(false);
+            this.pnDerecha.ResumeLayout(false);
+            this.pnImagenes.ResumeLayout(false);
+            this.gbBusqueda.ResumeLayout(false);
+            this.gbBusqueda.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbImagen1)).EndInit();
             this.pnIzquierda.ResumeLayout(false);
             this.pnPistas.ResumeLayout(false);
             this.pnPistas.PerformLayout();
@@ -422,12 +505,9 @@
 
         private System.Windows.Forms.Panel pnPrimario;
         private System.Windows.Forms.Panel pnDerecha;
-        private System.Windows.Forms.Panel pnCentro;
-        private System.Windows.Forms.Button btMostrarImagenes;
         private System.Windows.Forms.Panel pnIzquierda;
         private System.Windows.Forms.Panel pnPistas;
         private System.Windows.Forms.ComboBox cbUnidadesDisco;
-        private System.Windows.Forms.Button btBorrar;
         private System.Windows.Forms.Button btModificar;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox tbModificar;
@@ -454,6 +534,15 @@
         private System.Windows.Forms.Label laEstilo;
         private System.Windows.Forms.Label laComentario;
         private System.Windows.Forms.Label laArtista;
+        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.Panel pnImagenes;
+        private System.Windows.Forms.Button btBuscar;
+        private System.Windows.Forms.GroupBox gbBusqueda;
+        private System.Windows.Forms.CheckBox cbAmazon;
+        private System.Windows.Forms.CheckBox cbGoogle;
+        private System.Windows.Forms.ListView lvImagenes;
+        private System.Windows.Forms.PictureBox pbImagen1;
+        private System.Windows.Forms.Button btGuardar;
     }
 }
 

@@ -17,14 +17,35 @@ namespace TagMp3Magician
         #region VARIABLES
 
         /// <summary>
-        /// The pista
+        /// valor tipo string con el nombre completo de la pista
         /// </summary>
         private string pista;
-
+        /// <summary>
+        /// Obtiene el nombre completo de la pista
+        /// </summary>
+        /// <value>
+        /// valor tipo string con el nombre completo de la pista
+        /// </value>
         public string Pista
         {
             get { return pista; }
             set { pista = value; }
+        }
+
+        /// <summary>
+        /// valor tipo string con la ruta de la pista
+        /// </summary>
+        private string ruta;
+        /// <summary>
+        /// Obtiene la ruta de la pista
+        /// </summary>
+        /// <value>
+        /// valor tipo string con la ruta de la pista
+        /// </value>
+        public string Ruta
+        {
+            get { return ruta; }
+            set { ruta = value; }
         }
 
         /// <summary>
@@ -93,6 +114,7 @@ namespace TagMp3Magician
         public GenericSong(string nombreCancion, string ruta)
         {
             Pista = nombreCancion;
+            this.ruta = ruta;
             Obtener_Tag(ruta);
         }
 
