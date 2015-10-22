@@ -10,3 +10,5 @@ c:\users\hopesend\documents\visual studio 2013\Projects\TagMp3Magician\TagMp3Mag
 C:\Users\Hopesend\Documents\Visual Studio 2013\Projects\TagMp3Magician\TagMp3Magician\bin\Debug\policy.2.0.taglib-sharp.dll
 C:\Users\Hopesend\Documents\Visual Studio 2013\Projects\TagMp3Magician\TagMp3Magician\bin\Debug\taglib-sharp.dll
 C:\Users\Hopesend\Documents\Visual Studio 2013\Projects\TagMp3Magician\TagMp3Magician\bin\Debug\policy.2.0.taglib-sharp.config
+C:\Users\Hopesend\Documents\Visual Studio 2013\Projects\TagMp3Magician\TagMp3Magician\bin\Debug\GoogleSearchAPI.xml
+C:\Users\Hopesend\Documents\Visual Studio 2013\Projects\TagMp3Magician\TagMp3Magician\bin\Debug\Newtonsoft.Json.xml

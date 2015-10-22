@@ -33,11 +33,13 @@
             this.pnPrimario = new System.Windows.Forms.Panel();
             this.pnDerecha = new System.Windows.Forms.Panel();
             this.pnImagenes = new System.Windows.Forms.Panel();
+            this.btGuardar = new System.Windows.Forms.Button();
             this.btBuscar = new System.Windows.Forms.Button();
             this.gbBusqueda = new System.Windows.Forms.GroupBox();
             this.cbAmazon = new System.Windows.Forms.CheckBox();
             this.cbGoogle = new System.Windows.Forms.CheckBox();
             this.lvImagenes = new System.Windows.Forms.ListView();
+            this.listaImagenesLittle = new System.Windows.Forms.ImageList(this.components);
             this.pbImagen1 = new System.Windows.Forms.PictureBox();
             this.pnIzquierda = new System.Windows.Forms.Panel();
             this.pnPistas = new System.Windows.Forms.Panel();
@@ -68,8 +70,6 @@
             this.laEstilo = new System.Windows.Forms.Label();
             this.laComentario = new System.Windows.Forms.Label();
             this.laArtista = new System.Windows.Forms.Label();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.btGuardar = new System.Windows.Forms.Button();
             this.pnPrimario.SuspendLayout();
             this.pnDerecha.SuspendLayout();
             this.pnImagenes.SuspendLayout();
@@ -115,6 +115,16 @@
             this.pnImagenes.Size = new System.Drawing.Size(505, 589);
             this.pnImagenes.TabIndex = 91;
             // 
+            // btGuardar
+            // 
+            this.btGuardar.Enabled = false;
+            this.btGuardar.Location = new System.Drawing.Point(424, 561);
+            this.btGuardar.Name = "btGuardar";
+            this.btGuardar.Size = new System.Drawing.Size(75, 23);
+            this.btGuardar.TabIndex = 31;
+            this.btGuardar.Text = "Guardar";
+            this.btGuardar.UseVisualStyleBackColor = true;
+            // 
             // btBuscar
             // 
             this.btBuscar.Image = ((System.Drawing.Image)(resources.GetObject("btBuscar.Image")));
@@ -123,6 +133,7 @@
             this.btBuscar.Size = new System.Drawing.Size(54, 44);
             this.btBuscar.TabIndex = 16;
             this.btBuscar.UseVisualStyleBackColor = true;
+            this.btBuscar.Click += new System.EventHandler(this.btBuscar_Click);
             // 
             // gbBusqueda
             // 
@@ -157,12 +168,20 @@
             // 
             // lvImagenes
             // 
-            this.lvImagenes.LargeImageList = this.imageList1;
+            this.lvImagenes.Activation = System.Windows.Forms.ItemActivation.TwoClick;
+            this.lvImagenes.LargeImageList = this.listaImagenesLittle;
             this.lvImagenes.Location = new System.Drawing.Point(3, 160);
             this.lvImagenes.Name = "lvImagenes";
             this.lvImagenes.Size = new System.Drawing.Size(496, 395);
             this.lvImagenes.TabIndex = 12;
             this.lvImagenes.UseCompatibleStateImageBehavior = false;
+            this.lvImagenes.ItemActivate += new System.EventHandler(this.lvImagenes_ItemActivate);
+            // 
+            // listaImagenesLittle
+            // 
+            this.listaImagenesLittle.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
+            this.listaImagenesLittle.ImageSize = new System.Drawing.Size(90, 90);
+            this.listaImagenesLittle.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // pbImagen1
             // 
@@ -459,22 +478,6 @@
             this.laArtista.TabIndex = 72;
             this.laArtista.Text = "Artista";
             // 
-            // imageList1
-            // 
-            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
-            this.imageList1.ImageSize = new System.Drawing.Size(100, 100);
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // btGuardar
-            // 
-            this.btGuardar.Enabled = false;
-            this.btGuardar.Location = new System.Drawing.Point(424, 561);
-            this.btGuardar.Name = "btGuardar";
-            this.btGuardar.Size = new System.Drawing.Size(75, 23);
-            this.btGuardar.TabIndex = 31;
-            this.btGuardar.Text = "Guardar";
-            this.btGuardar.UseVisualStyleBackColor = true;
-            // 
             // fmTagMp3Magician
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -534,7 +537,7 @@
         private System.Windows.Forms.Label laEstilo;
         private System.Windows.Forms.Label laComentario;
         private System.Windows.Forms.Label laArtista;
-        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.ImageList listaImagenesLittle;
         private System.Windows.Forms.Panel pnImagenes;
         private System.Windows.Forms.Button btBuscar;
         private System.Windows.Forms.GroupBox gbBusqueda;

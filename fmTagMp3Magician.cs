@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace TagMp3Magician
 {
@@ -81,24 +83,14 @@ namespace TagMp3Magician
             {
                 if (Contiene_Mp3(tvDirectorioMp3.SelectedNode.Tag.ToString()))
                 {
-                    album = new GenericAlbum(@tvDirectorioMp3.SelectedNode.Tag.ToString());
-
-                    tbArtista.Text = album.Artista;
-                    tbAlbum.Text = album.Titulo;
-                    tbAnyo.Text = album.AnyoGrabacion.ToString();
-                    tbEstilo.Text = album.Estilo;
-                    tbComentario.Text = album.Comentario;
-                    tbBitrate.Text = album.Bitrate.ToString();
-
-                    pnCambios.Enabled = true;
-                    lvPistas.Items.Clear();
-                    foreach(GenericSong cancion in album.Devolver_Canciones())
-                    {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = cancion.Pista;
-                        item.Tag = cancion;
-                        lvPistas.Items.Add(item);
-                    }
+                    //Obtenemos el album segun el path seleccionado
+                    Capturar_Album(@tvDirectorioMp3.SelectedNode.Tag.ToString());
+                    //Buscamos las imagenes en disco y en el tag
+                    Capturar_Imagenes_Album();
+                    //Insertamos si existe la caratula en el picturebox
+                    pbImagen1.Image = album.CaratulaAlbum == null ? pbImagen1.ErrorImage : album.CaratulaAlbum;
+                    //Activamos Zona de Imagenes
+                    pnImagenes.Enabled = true;
                 }
             }
             else
@@ -163,6 +155,27 @@ namespace TagMp3Magician
             PonerMayusculas();
         }
 
+        private void lvImagenes_ItemActivate(object sender, EventArgs e)
+        {
+            pbImagen1.Image = (Image)lvImagenes.SelectedItems[0].Tag;
+        }
+
+        private void btBuscar_Click(object sender, EventArgs e)
+        {
+            Image[] imagenesDescargadas = null;
+
+            if (cbGoogle.Checked || cbAmazon.Checked)
+            {
+                if (cbGoogle.Checked)
+                {
+                    BusquedaImagenesUrl nuevaBusqueda = new BusquedaImagenesUrl();
+
+                    imagenesDescargadas = nuevaBusqueda.BusquedaGoogle(tbArtista.Text + "+" + tbAlbum.Text);
+                }
+
+                Insertar_Imagenes(imagenesDescargadas);
+            }
+        }
 
         #endregion
 
@@ -249,6 +262,121 @@ namespace TagMp3Magician
             }
         }
 
+        private void Capturar_Album(string path)
+        {
+            album = new GenericAlbum(path);
+
+            tbArtista.Text = album.Artista;
+            tbAlbum.Text = album.Titulo;
+            tbAnyo.Text = album.AnyoGrabacion.ToString();
+            tbEstilo.Text = album.Estilo;
+            tbComentario.Text = album.Comentario;
+            tbBitrate.Text = album.Bitrate.ToString();
+
+            pnCambios.Enabled = true;
+            lvPistas.Items.Clear();
+            foreach (GenericSong cancion in album.Devolver_Canciones())
+            {
+                ListViewItem item = new ListViewItem();
+                item.Text = cancion.Pista;
+                item.Tag = cancion;
+                lvPistas.Items.Add(item);
+            }
+        }
+
+        private void Capturar_Imagenes_Album()
+        {
+            List<Image> listaAux = new List<Image>();
+            listaImagenesLittle.Images.Clear();
+            lvImagenes.Items.Clear();
+
+            //Capturamos en el Tag
+            foreach(ListViewItem item in lvPistas.Items)
+            {
+                GenericSong aux = (GenericSong)item.Tag;
+                if (listaAux.FindAll(x => CompararBitmaps(x, aux.CaratulaAlbum)).Count().Equals(0))
+                    if(aux.CaratulaAlbum != null)
+                        listaAux.Add(aux.CaratulaAlbum);
+            }
+
+            //Capturamos en el Directorio
+            foreach(Image imagenDirectorio in Capturar_Imagenes_Directorio(album.RutaAlbum))
+            {
+                if (listaAux.FindAll(x => CompararBitmaps(x, imagenDirectorio)).Count().Equals(0))
+                    if(imagenDirectorio != null)
+                        listaAux.Add(imagenDirectorio);
+            }
+
+            Insertar_Imagenes(listaAux.ToArray());
+        }
+
+        private Image[] Capturar_Imagenes_Directorio(string path)
+        {
+            List<Image> aux = new List<Image>();
+            string[] extensiones = { ".jpg", ".JPG", ".jpeg", ".JPEG", ".gif", ".GIF", ".bmp", ".BMP", ".png", ".PNG" };
+
+            foreach (string pathArchivo in Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories).Where(s => extensiones.Any(ext => ext == Path.GetExtension(s))))
+            {
+                aux.Add(Image.FromFile(pathArchivo));
+            }
+
+            return aux.ToArray();
+        }
+
+        private bool CompararBitmaps(Image imagen1, Image imagen2)
+        {
+            if (object.Equals(imagen1, imagen2))
+                return true;
+            if (imagen1 == null || imagen2 == null)
+                return false;
+            if (!imagen1.Size.Equals(imagen2.Size) || !imagen1.PixelFormat.Equals(imagen2.PixelFormat))
+                return false;
+
+            Bitmap imagen1Bitmap = new Bitmap(imagen1);
+            Bitmap imagen2Bitmap = new Bitmap(imagen2);
+            if (imagen1Bitmap == null || imagen2Bitmap == null)
+                return true;
+
+            int bytes = imagen1.Width * imagen1.Height * (Image.GetPixelFormatSize(imagen1.PixelFormat) / 8);
+
+            bool result = true;
+            byte[] b1bytes = new byte[bytes];
+            byte[] b2bytes = new byte[bytes];
+
+            BitmapData bmd1 = imagen1Bitmap.LockBits(new Rectangle(0, 0, imagen1Bitmap.Width - 1, imagen1Bitmap.Height - 1), ImageLockMode.ReadOnly, imagen1Bitmap.PixelFormat);
+            BitmapData bmd2 = imagen2Bitmap.LockBits(new Rectangle(0, 0, imagen2Bitmap.Width - 1, imagen2Bitmap.Height - 1), ImageLockMode.ReadOnly, imagen2Bitmap.PixelFormat);
+
+            Marshal.Copy(bmd1.Scan0, b1bytes, 0, bytes);
+            Marshal.Copy(bmd2.Scan0, b2bytes, 0, bytes);
+
+            for (int n = 0; n <= bytes - 1; n++)
+            {
+                if (b1bytes[n] != b2bytes[n])
+                {
+                    result = false;
+                    break;
+                }
+            }
+
+            imagen1Bitmap.UnlockBits(bmd1);
+            imagen2Bitmap.UnlockBits(bmd2);
+
+            return result;
+        }
+
+        private void Insertar_Imagenes(Image[] imagenes)
+        {
+            for (int cont = 0; cont < imagenes.Length; cont++)
+            {
+                ListViewItem itemImagen = new ListViewItem();
+                itemImagen.Text = imagenes[cont].Width.ToString() + "x" + imagenes[cont].Height.ToString();
+                itemImagen.ImageIndex = cont;
+                itemImagen.Tag = imagenes[cont];
+                lvImagenes.Items.Add(itemImagen);
+
+                listaImagenesLittle.Images.Add(imagenes[cont]);
+            }
+        }
         #endregion
     }
 }
