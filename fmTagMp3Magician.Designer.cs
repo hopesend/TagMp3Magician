@@ -36,6 +36,8 @@
             this.btGuardar = new System.Windows.Forms.Button();
             this.btBuscar = new System.Windows.Forms.Button();
             this.gbBusqueda = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.nudTotalResultados = new System.Windows.Forms.NumericUpDown();
             this.cbAmazon = new System.Windows.Forms.CheckBox();
             this.cbGoogle = new System.Windows.Forms.CheckBox();
             this.lvImagenes = new System.Windows.Forms.ListView();
@@ -70,10 +72,12 @@
             this.laEstilo = new System.Windows.Forms.Label();
             this.laComentario = new System.Windows.Forms.Label();
             this.laArtista = new System.Windows.Forms.Label();
+            this.bgwGrabacionMp3 = new System.ComponentModel.BackgroundWorker();
             this.pnPrimario.SuspendLayout();
             this.pnDerecha.SuspendLayout();
             this.pnImagenes.SuspendLayout();
             this.gbBusqueda.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTotalResultados)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbImagen1)).BeginInit();
             this.pnIzquierda.SuspendLayout();
             this.pnPistas.SuspendLayout();
@@ -124,6 +128,7 @@
             this.btGuardar.TabIndex = 31;
             this.btGuardar.Text = "Guardar";
             this.btGuardar.UseVisualStyleBackColor = true;
+            this.btGuardar.Click += new System.EventHandler(this.btGuardar_Click);
             // 
             // btBuscar
             // 
@@ -137,14 +142,42 @@
             // 
             // gbBusqueda
             // 
+            this.gbBusqueda.Controls.Add(this.label4);
+            this.gbBusqueda.Controls.Add(this.nudTotalResultados);
             this.gbBusqueda.Controls.Add(this.cbAmazon);
             this.gbBusqueda.Controls.Add(this.cbGoogle);
-            this.gbBusqueda.Location = new System.Drawing.Point(159, 104);
+            this.gbBusqueda.Location = new System.Drawing.Point(159, 82);
             this.gbBusqueda.Name = "gbBusqueda";
-            this.gbBusqueda.Size = new System.Drawing.Size(280, 48);
+            this.gbBusqueda.Size = new System.Drawing.Size(280, 70);
             this.gbBusqueda.TabIndex = 15;
             this.gbBusqueda.TabStop = false;
             this.gbBusqueda.Text = "Seleccion de Busqueda";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(52, 51);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(60, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Resultados";
+            // 
+            // nudTotalResultados
+            // 
+            this.nudTotalResultados.Location = new System.Drawing.Point(6, 47);
+            this.nudTotalResultados.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudTotalResultados.Name = "nudTotalResultados";
+            this.nudTotalResultados.Size = new System.Drawing.Size(40, 20);
+            this.nudTotalResultados.TabIndex = 2;
+            this.nudTotalResultados.Value = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
             // 
             // cbAmazon
             // 
@@ -478,6 +511,12 @@
             this.laArtista.TabIndex = 72;
             this.laArtista.Text = "Artista";
             // 
+            // bgwGrabacionMp3
+            // 
+            this.bgwGrabacionMp3.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwGrabacionMp3_DoWork);
+            this.bgwGrabacionMp3.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgwGrabacionMp3_ProgressChanged);
+            this.bgwGrabacionMp3.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwGrabacionMp3_RunWorkerCompleted);
+            // 
             // fmTagMp3Magician
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -492,6 +531,7 @@
             this.pnImagenes.ResumeLayout(false);
             this.gbBusqueda.ResumeLayout(false);
             this.gbBusqueda.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTotalResultados)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbImagen1)).EndInit();
             this.pnIzquierda.ResumeLayout(false);
             this.pnPistas.ResumeLayout(false);
@@ -546,6 +586,9 @@
         private System.Windows.Forms.ListView lvImagenes;
         private System.Windows.Forms.PictureBox pbImagen1;
         private System.Windows.Forms.Button btGuardar;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NumericUpDown nudTotalResultados;
+        private System.ComponentModel.BackgroundWorker bgwGrabacionMp3;
     }
 }
 

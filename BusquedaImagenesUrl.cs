@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Net;
 using System.Windows.Forms;
 using System.Drawing;
+using System.ComponentModel;
 using System.IO;
 using Google.API.Search;
 
@@ -17,6 +18,8 @@ namespace TagMp3Magician
 
         private WebClient cliente;
         private List<Image> ImagenesRescatadas;
+
+        private BackgroundWorker hiloGoogle;
 
         #endregion
 
@@ -38,20 +41,11 @@ namespace TagMp3Magician
         public class StartReadEventArgs : EventArgs
         {
             /// <summary>
-            /// Numero de imagenes leidas en GoogleImages
-            /// </summary>
-            /// <value>
-            /// numero total de imagenes
-            /// </value>
-            public int totalImages { get; set; }
-
-            /// <summary>
             /// Inicializa una instancia a la clase <see cref="StarReadEventArgs"/>.
             /// </summary>
             /// <param name="totalImages">number total of images gets in GoogleImage</param>
-            public StartReadEventArgs(int totalImages)
+            public StartReadEventArgs()
             {
-                this.totalImages = totalImages;
             }
         }
         /// <summary>
@@ -63,7 +57,7 @@ namespace TagMp3Magician
         /// <summary>
         /// Evento que se produce al mandar la peticion a Google Images
         /// </summary>
-        public event StartReadHandler StartReadPdf;
+        public event StartReadHandler StartGooglePetition;
 
         /// <summary>
         /// Datos del evento StopReadEvent.
@@ -71,10 +65,19 @@ namespace TagMp3Magician
         public class StopReadEventArgs : EventArgs
         {
             /// <summary>
-            /// Inicializa una instancia a la clase <see cref="StopReadEventArgs"/>.
+            /// Imagenes descargadas de google
             /// </summary>
-            public StopReadEventArgs()
+            /// <value>
+            /// imagenes descargadas de google
+            /// </value>
+            public Image[] totalImages { get; set; }
+            /// <summary>
+            /// Inicializa una instancia a la clase <see cref="StopReadEventArgs"/>.
+            /// <param name="totalImages">imagenes descargadas de google</param>
+            /// </summary>
+            public StopReadEventArgs(Image[] totalImages)
             {
+                this.totalImages = totalImages;
             }
         }
         /// <summary>
@@ -86,7 +89,7 @@ namespace TagMp3Magician
         /// <summary>
         /// Evento que se produce al finalizar la descarga de imagenes
         /// </summary>
-        public event StopReadHandler StopReadPdf;
+        public event StopReadHandler FinishGooglePetition;
 
         /// <summary>
         /// Datos del evento GetImages
@@ -125,23 +128,54 @@ namespace TagMp3Magician
 
         #region METODOS GOOGLE
 
-        public Image[] BusquedaGoogle(string patronBusqueda)
+        public void BusquedaGoogle(string patronBusqueda, int numeroBusqueda)
         {
             ImagenesRescatadas.Clear();
 
-            GimageSearchClient client = new GimageSearchClient("http://www.google.com");
-            IList<IImageResult> results = client.Search(patronBusqueda, 30);
+            //Lanzamos el Evento de Comienzo de lectura de Pdf
+            StartReadEventArgs StartEvento = new StartReadEventArgs();
+            StartGooglePetition(this, StartEvento);
 
+            hiloGoogle = new BackgroundWorker();
+            hiloGoogle.WorkerReportsProgress = true;
+            hiloGoogle.DoWork += hiloGoogle_DoWork;
+            hiloGoogle.ProgressChanged += hiloGoogle_ProgressChanged;
+            hiloGoogle.RunWorkerCompleted += hiloGoogle_RunWorkerCompleted;
+            hiloGoogle.RunWorkerAsync(new string[] { patronBusqueda, numeroBusqueda.ToString() });
+        }
+
+        void hiloGoogle_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            //Lanzamos el Evento de Nueva Imagen Leida
+            GetImagesEventArgs NewImageEvent = new GetImagesEventArgs(e.ProgressPercentage);
+            NewImageRead(this, NewImageEvent);
+        }
+
+        void hiloGoogle_DoWork(object sender, DoWorkEventArgs e)
+        {
+            string[] argumentos = (string[])e.Argument;
+            GimageSearchClient client = new GimageSearchClient("http://www.google.com");
+            IList<IImageResult> results = client.Search(argumentos[0], int.Parse(argumentos[1]));
+
+            int cont = 1;
             foreach (IImageResult result in results)
             {
                 try
                 {
                     ImagenesRescatadas.Add(new Bitmap(cliente.OpenRead(result.Url)));
                 }
-                catch{};
-            }
+                catch { };
 
-            return Devolver_Imagenes();
+                hiloGoogle.ReportProgress(cont);
+                cont++;
+            }
+        }
+
+        void hiloGoogle_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //Lanzamos el Evento de Comienzo de lectura de Pdf
+            StopReadEventArgs FinishEvento = new StopReadEventArgs(Devolver_Imagenes());
+            FinishGooglePetition(this, FinishEvento);
         }
 
         #endregion

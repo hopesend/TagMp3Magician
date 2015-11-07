@@ -103,12 +103,15 @@ namespace TagMp3Magician
 
         public TagLib.Properties propiedades;
 
+        public Tag nuevoTagCancion;
+
         #endregion
 
         #region CONSTRUCTORES
 
         public GenericSong()
         {
+
         }
 
         public GenericSong(string nombreCancion, string ruta)
@@ -160,6 +163,49 @@ namespace TagMp3Magician
             propiedades = PistaMp3.Properties;
 
             PistaMp3.Dispose();
+        }
+
+        public bool Guardar_Pista()
+        {
+            TagLib.File PistaMp3 = TagLib.File.Create(ruta);
+
+            PistaMp3.RemoveTags(TagTypes.AllTags);
+            PistaMp3.Tag.CopyTo(nuevoTagCancion, true);
+
+            string rutaAuxiliar = Path.GetTempFileName();
+            caratulaAlbum.Save(rutaAuxiliar, System.Drawing.Imaging.ImageFormat.Jpeg);
+            TagLib.Picture myCover = new Picture(rutaAuxiliar);
+            //Coloco el Picture en el FrameCorrespondiente
+            TagLib.Id3v2.AttachedPictureFrame coverAlbumArt = new TagLib.Id3v2.AttachedPictureFrame(myCover);
+            //Seteo el tipo Mime
+            coverAlbumArt.MimeType = System.Net.Mime.MediaTypeNames.Image.Jpeg;
+            //Seteo el tipo de imagen que estoy colocando
+            coverAlbumArt.Type = TagLib.PictureType.FrontCover;
+            //Agrego el frame a la coleccion de imagenes que corresponde
+            TagLib.IPicture[] pictFrame = { coverAlbumArt };
+            //Vuelco la coleccion de imagenes al Tag
+            try
+            {
+                PistaMp3.Tag.Pictures = pictFrame;
+            }
+            catch
+            {
+                //MessageBox.Show("Imposible Insercion de Imagen en Tag. Posible Error de Archivo -" + new FileInfo(RutaArchivo).FullName + "-");
+            }
+
+            System.IO.File.Delete(rutaAuxiliar);
+
+            try
+            {
+                PistaMp3.Save();
+                PistaMp3.Dispose();
+                return true;
+            }
+            catch
+            {
+                PistaMp3.Dispose();
+                return false;
+            }
         }
 
         #endregion

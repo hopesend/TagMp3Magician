@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -105,6 +106,8 @@ namespace TagMp3Magician
                 RellenarTreeViewMp3(e.Node);
                 e.Node.Expand();
             }
+
+            btGuardar.Enabled = true;
         }
 
         private void lvPistas_ItemActivate(object sender, EventArgs e)
@@ -162,20 +165,84 @@ namespace TagMp3Magician
 
         private void btBuscar_Click(object sender, EventArgs e)
         {
-            Image[] imagenesDescargadas = null;
-
             if (cbGoogle.Checked || cbAmazon.Checked)
             {
                 if (cbGoogle.Checked)
                 {
                     BusquedaImagenesUrl nuevaBusqueda = new BusquedaImagenesUrl();
+                    nuevaBusqueda.StartGooglePetition += nuevaBusqueda_StartGooglePetition;
+                    nuevaBusqueda.FinishGooglePetition += nuevaBusqueda_FinishGooglePetition;
+                    nuevaBusqueda.NewImageRead += nuevaBusqueda_NewImageRead;
 
-                    imagenesDescargadas = nuevaBusqueda.BusquedaGoogle(tbArtista.Text + "+" + tbAlbum.Text);
+                    nuevaBusqueda.BusquedaGoogle(tbArtista.Text + "+" + tbAlbum.Text, (int)nudTotalResultados.Value);
                 }
-
-                Insertar_Imagenes(imagenesDescargadas);
             }
         }
+
+        private void nuevaBusqueda_NewImageRead(object sender, BusquedaImagenesUrl.GetImagesEventArgs e)
+        {
+            pgCanciones.Value = e.newImage;
+        }
+
+        private void nuevaBusqueda_FinishGooglePetition(object sender, BusquedaImagenesUrl.StopReadEventArgs e)
+        {
+            pgCanciones.Visible = false;
+            Insertar_Imagenes(e.totalImages);
+        }
+
+        private void nuevaBusqueda_StartGooglePetition(object sender, BusquedaImagenesUrl.StartReadEventArgs e)
+        {
+            pgCanciones.Visible = true;
+            pgCanciones.Maximum = (int)nudTotalResultados.Value;
+            pgCanciones.Step = 1;
+            pgCanciones.Minimum = 1;
+        }
+
+        private void btGuardar_Click(object sender, EventArgs e)
+        {
+            bgwGrabacionMp3.WorkerReportsProgress = true;
+            bgwGrabacionMp3.RunWorkerAsync();
+        }
+
+        private void bgwGrabacionMp3_DoWork(object sender, DoWorkEventArgs e)
+        {
+            CheckForIllegalCrossThreadCalls = false;
+
+            pgCanciones.Visible = true;
+            pgCanciones.Maximum = lvPistas.Items.Count;
+            pgCanciones.Step = 1;
+            pgCanciones.Minimum = 1;
+
+            GenericSong cancionAux;
+
+            foreach (ListViewItem item in lvPistas.Items)
+            {
+                cancionAux = (GenericSong)item.Tag;
+
+                cancionAux.nuevoTagCancion.Performers = new string[] { tbArtista.Text };
+                cancionAux.nuevoTagCancion.Album = tbAlbum.Text;
+                cancionAux.nuevoTagCancion.Year = Convert.ToUInt16(tbAnyo.Text);
+                cancionAux.nuevoTagCancion.Genres = new string[] { tbEstilo.Text };
+                cancionAux.nuevoTagCancion.Comment = tbComentario.Text;
+                cancionAux.CaratulaAlbum = pbImagen1.Image;
+
+                if (!cancionAux.Guardar_Pista())
+                    MessageBox.Show("La Pista \"" + item.Text + "\" no a podido grabarse correctamente");
+
+                bgwGrabacionMp3.ReportProgress(item.Index);
+            }
+        }
+
+        private void bgwGrabacionMp3_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            pgCanciones.Value = e.ProgressPercentage;
+        }
+
+        private void bgwGrabacionMp3_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            pgCanciones.Visible = false;
+        }
+
 
         #endregion
 
@@ -366,17 +433,23 @@ namespace TagMp3Magician
 
         private void Insertar_Imagenes(Image[] imagenes)
         {
-            for (int cont = 0; cont < imagenes.Length; cont++)
+            int finContador = (listaImagenesLittle.Images.Count + imagenes.Length);
+            int totalImagenes = listaImagenesLittle.Images.Count;
+
+            for (int cont = listaImagenesLittle.Images.Count; cont < finContador; cont++)
             {
                 ListViewItem itemImagen = new ListViewItem();
-                itemImagen.Text = imagenes[cont].Width.ToString() + "x" + imagenes[cont].Height.ToString();
+                itemImagen.Text = imagenes[cont-totalImagenes].Width.ToString() + "x" + imagenes[cont-totalImagenes].Height.ToString();
                 itemImagen.ImageIndex = cont;
-                itemImagen.Tag = imagenes[cont];
+                itemImagen.Tag = imagenes[cont-totalImagenes];
                 lvImagenes.Items.Add(itemImagen);
 
-                listaImagenesLittle.Images.Add(imagenes[cont]);
+                listaImagenesLittle.Images.Add(imagenes[cont-totalImagenes]);
             }
         }
         #endregion
+
+
+        
     }
 }
