@@ -522,6 +522,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1078, 589);
             this.Controls.Add(this.pnPrimario);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "fmTagMp3Magician";
             this.Text = "Tag Mp3 Magician v1.0.0";
             this.Load += new System.EventHandler(this.fmTagMp3Magician_Load);
