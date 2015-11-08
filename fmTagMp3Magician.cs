@@ -201,6 +201,10 @@ namespace TagMp3Magician
         private void btGuardar_Click(object sender, EventArgs e)
         {
             bgwGrabacionMp3.WorkerReportsProgress = true;
+            pgCanciones.Visible = true;
+            pgCanciones.Maximum = lvPistas.Items.Count;
+            pgCanciones.Step = 1;
+            pgCanciones.Minimum = 1;
             bgwGrabacionMp3.RunWorkerAsync();
         }
 
@@ -208,28 +212,25 @@ namespace TagMp3Magician
         {
             CheckForIllegalCrossThreadCalls = false;
 
-            pgCanciones.Visible = true;
-            pgCanciones.Maximum = lvPistas.Items.Count;
-            pgCanciones.Step = 1;
-            pgCanciones.Minimum = 1;
-
             GenericSong cancionAux;
-
+            int cont = 1;
             foreach (ListViewItem item in lvPistas.Items)
             {
                 cancionAux = (GenericSong)item.Tag;
 
-                cancionAux.nuevoTagCancion.Performers = new string[] { tbArtista.Text };
-                cancionAux.nuevoTagCancion.Album = tbAlbum.Text;
-                cancionAux.nuevoTagCancion.Year = Convert.ToUInt16(tbAnyo.Text);
-                cancionAux.nuevoTagCancion.Genres = new string[] { tbEstilo.Text };
-                cancionAux.nuevoTagCancion.Comment = tbComentario.Text;
+                cancionAux.Artista = tbArtista.Text;
+                cancionAux.Album = tbAlbum.Text;
+                cancionAux.Anyo = Convert.ToUInt16(tbAnyo.Text);
+                cancionAux.Genero = tbEstilo.Text;
+                cancionAux.Comentario = tbComentario.Text;
+                cancionAux.Titulo = Path.GetFileNameWithoutExtension(item.Text.Remove(0, item.Text.IndexOf(".") + 2));
+                cancionAux.Indice = int.Parse(item.Text.Remove(item.Text.IndexOf(".")));
                 cancionAux.CaratulaAlbum = pbImagen1.Image;
 
                 if (!cancionAux.Guardar_Pista())
                     MessageBox.Show("La Pista \"" + item.Text + "\" no a podido grabarse correctamente");
 
-                bgwGrabacionMp3.ReportProgress(item.Index);
+                bgwGrabacionMp3.ReportProgress(cont++);
             }
         }
 

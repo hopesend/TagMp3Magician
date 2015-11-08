@@ -13,7 +13,6 @@ namespace TagMp3Magician
     /// </summary>
     public class GenericSong
     {
-
         #region VARIABLES
 
         /// <summary>
@@ -96,14 +95,18 @@ namespace TagMp3Magician
             set { caratulaAlbum = value; }
         }
 
+        public string Artista;
+        public string Album;
+        public int Anyo;
+        public string Genero;
+        public string Comentario;
+
         /// <summary>
         /// Objeto contenedor del tag de la cancion
         /// </summary>
         public Tag tagCancion;
 
         public TagLib.Properties propiedades;
-
-        public Tag nuevoTagCancion;
 
         #endregion
 
@@ -127,7 +130,8 @@ namespace TagMp3Magician
 
         private void Obtener_Indice(string titulo)
         {
-            Indice = Buscar_Indice(titulo);
+            if(titulo != null)
+                Indice = Buscar_Indice(titulo);
         }
 
         private int Buscar_Indice (string texto)
@@ -145,10 +149,18 @@ namespace TagMp3Magician
         {
             TagLib.File PistaMp3 = TagLib.File.Create(ruta);
 
-            indice = PistaMp3.Tag.Track.Equals(0) ? indice = Buscar_Indice(Titulo) : indice = (int)PistaMp3.Tag.Track;
+            try { indice = PistaMp3.Tag.Track.Equals(0) ? indice = Buscar_Indice(Titulo) : indice = (int)PistaMp3.Tag.Track; }
+            catch { indice = 0; }
 
-            if (!PistaMp3.Tag.Title.Equals(string.Empty))
-                Titulo = PistaMp3.Tag.Title;
+            try
+            {
+                if (!PistaMp3.Tag.Title.Equals(string.Empty))
+                    Titulo = PistaMp3.Tag.Title;
+            }
+            catch
+            {
+                Titulo = string.Empty;
+            }
 
             try 
             { 
@@ -169,8 +181,16 @@ namespace TagMp3Magician
         {
             TagLib.File PistaMp3 = TagLib.File.Create(ruta);
 
-            PistaMp3.RemoveTags(TagTypes.AllTags);
-            PistaMp3.Tag.CopyTo(nuevoTagCancion, true);
+            PistaMp3.Tag.Clear();
+
+            PistaMp3.Tag.Performers = new string[] { Artista };
+            PistaMp3.Tag.AlbumArtists = new string[] { Artista };
+            PistaMp3.Tag.Album = Album;
+            PistaMp3.Tag.Year = (uint) Anyo;
+            PistaMp3.Tag.Genres = new string[] { Genero };
+            PistaMp3.Tag.Comment = Comentario;
+            PistaMp3.Tag.Title = Titulo;
+            PistaMp3.Tag.Track = (uint)Indice;
 
             string rutaAuxiliar = Path.GetTempFileName();
             caratulaAlbum.Save(rutaAuxiliar, System.Drawing.Imaging.ImageFormat.Jpeg);

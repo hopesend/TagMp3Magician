@@ -430,7 +430,6 @@
             // 
             this.tbComentario.Location = new System.Drawing.Point(65, 108);
             this.tbComentario.Name = "tbComentario";
-            this.tbComentario.ReadOnly = true;
             this.tbComentario.Size = new System.Drawing.Size(207, 20);
             this.tbComentario.TabIndex = 70;
             // 
