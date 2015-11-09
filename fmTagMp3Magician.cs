@@ -156,6 +156,7 @@ namespace TagMp3Magician
         {
             PonerPunto();
             PonerMayusculas();
+            PonerTags();
         }
 
         private void lvImagenes_ItemActivate(object sender, EventArgs e)
@@ -221,7 +222,7 @@ namespace TagMp3Magician
                 cancionAux.Artista = tbArtista.Text;
                 cancionAux.Album = tbAlbum.Text;
                 cancionAux.Anyo = Convert.ToUInt16(tbAnyo.Text);
-                cancionAux.Genero = tbEstilo.Text;
+                cancionAux.Genero = cbEstilo.Text;
                 cancionAux.Comentario = tbComentario.Text;
                 cancionAux.Titulo = Path.GetFileNameWithoutExtension(item.Text.Remove(0, item.Text.IndexOf(".") + 2));
                 cancionAux.Indice = int.Parse(item.Text.Remove(item.Text.IndexOf(".")));
@@ -229,6 +230,9 @@ namespace TagMp3Magician
 
                 if (!cancionAux.Guardar_Pista())
                     MessageBox.Show("La Pista \"" + item.Text + "\" no a podido grabarse correctamente");
+
+                File.Move(cancionAux.Ruta, Path.Combine(new string[] {Path.GetDirectoryName(cancionAux.Ruta), item.Text}));
+                cancionAux.Ruta = Path.Combine(new string[] { Path.GetDirectoryName(cancionAux.Ruta), item.Text });
 
                 bgwGrabacionMp3.ReportProgress(cont++);
             }
@@ -302,6 +306,11 @@ namespace TagMp3Magician
                     // Insertamos el Punto
                     item.Text = item.Text.Insert(2, ".");
                 }
+                else
+                {
+                    if (item.Text[3] != ' ')
+                        item.Text = item.Text.Insert(3, " ");
+                }
             }
         }
 
@@ -330,6 +339,18 @@ namespace TagMp3Magician
             }
         }
 
+        private void PonerTags()
+        {
+            if (tbArtista.Text.Equals(string.Empty))
+                tbArtista.Text = album.Artista;
+
+            if (tbAlbum.Text.Equals(string.Empty))
+                tbAlbum.Text = album.NombreAlbum;
+
+            if (tbAnyo.Text.Equals("0"))
+                tbAnyo.Text = album.AnyoGrabacion.ToString();
+        }
+
         private void Capturar_Album(string path)
         {
             album = new GenericAlbum(path);
@@ -337,7 +358,14 @@ namespace TagMp3Magician
             tbArtista.Text = album.Artista;
             tbAlbum.Text = album.Titulo;
             tbAnyo.Text = album.AnyoGrabacion.ToString();
-            tbEstilo.Text = album.Estilo;
+            if (album.Estilo != null)
+            {
+                if (cbEstilo.Items.IndexOf(album.Estilo) >= 0)
+                    cbEstilo.SelectedIndex = cbEstilo.Items.IndexOf(album.Estilo);
+            }
+            else
+                cbEstilo.SelectedIndex = 0;
+
             tbComentario.Text = album.Comentario;
             tbBitrate.Text = album.Bitrate.ToString();
 
