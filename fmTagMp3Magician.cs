@@ -16,7 +16,6 @@ namespace TagMp3Magician
 {
     public partial class fmTagMp3Magician : Form
     {
-
         #region VARIABLES
 
         public GenericAlbum album;
@@ -187,6 +186,7 @@ namespace TagMp3Magician
 
         private void nuevaBusqueda_FinishGooglePetition(object sender, BusquedaImagenesUrl.StopReadEventArgs e)
         {
+            pgCanciones.Value = 1;
             pgCanciones.Visible = false;
             Insertar_Imagenes(e.totalImages);
         }
@@ -245,6 +245,7 @@ namespace TagMp3Magician
 
         private void bgwGrabacionMp3_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            pgCanciones.Value = 1;
             pgCanciones.Visible = false;
         }
 
@@ -476,9 +477,6 @@ namespace TagMp3Magician
                 listaImagenesLittle.Images.Add(imagenes[cont-totalImagenes]);
             }
         }
-        #endregion
-
-
-        
+        #endregion 
     }
 }

@@ -207,8 +207,14 @@ namespace TagMp3Magician
                 listaCanciones.Add(new GenericSong(Path.GetFileName(archivoAlbum), archivoAlbum));
             }
 
-            if(Artista == null)
+            if (Artista == null || Artista == string.Empty)
+            {
                 Artista = (listaCanciones.FindAll(x => x.tagCancion.FirstPerformer == listaCanciones[0].tagCancion.FirstPerformer).Count().Equals(listaCanciones.Count())) ? listaCanciones[0].tagCancion.FirstPerformer : "<Desconocido>";
+                if (Artista == null)
+                {
+                    Artista = (listaCanciones.FindAll(x => x.tagCancion.AlbumArtists[0] == listaCanciones[0].tagCancion.AlbumArtists[0]).Count().Equals(listaCanciones.Count())) ? listaCanciones[0].tagCancion.AlbumArtists[0] : "<Desconocido>";
+                }
+            }
 
             if(AnyoGrabacion.Equals(0))
                 AnyoGrabacion = (listaCanciones.FindAll(x => (int)x.tagCancion.Year == (int)listaCanciones[0].tagCancion.Year).Count().Equals(listaCanciones.Count())) ? (int)listaCanciones[0].tagCancion.Year : 0;
