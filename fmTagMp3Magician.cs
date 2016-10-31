@@ -156,6 +156,8 @@ namespace TagMp3Magician
             PonerPunto();
             PonerMayusculas();
             PonerTags();
+
+            lvPistas.Sort();
         }
 
         private void lvImagenes_ItemActivate(object sender, EventArgs e)
@@ -298,20 +300,45 @@ namespace TagMp3Magician
 
         private void PonerPunto()
         {
-            // Recorremos la lista del Archivos en el ListView
             foreach (ListViewItem item in lvPistas.Items)
             {
-                // Comprobamos que tenga un punto tras el numero de pista, si no lo tiene lo inserta
-                if (item.Text[2] != '.')
+                //Insertar numero de pista sino Existiese
+                if (Path.GetFileNameWithoutExtension(item.Text).Split('.').Count().Equals(1))
                 {
-                    // Insertamos el Punto
-                    item.Text = item.Text.Insert(2, ".");
+                    if (!char.IsDigit(item.Text[0]))
+                    {
+                        if (((GenericSong)item.Tag).Indice != 0)
+                            item.Text = item.Text.Insert(0, ((GenericSong)item.Tag).Indice.ToString() + ". ");
+                    }
                 }
-                else
+
+                // Insertar 0 si no existiese
+                if (Path.GetFileNameWithoutExtension(item.Text).Split('.').Count() > 0)
                 {
+                    string numeracion = Path.GetFileNameWithoutExtension(item.Text).Split('.')[0].Trim('.');
+                    if (numeracion.Length.Equals(1))
+                    {
+                        if (char.IsDigit(numeracion[0]))
+                            item.Text = item.Text.Insert(0, "0");
+                    }
+                }
+
+                if (Path.GetFileNameWithoutExtension(item.Text).Split(' ').Count() > 0)
+                {
+                    string numeracion = Path.GetFileNameWithoutExtension(item.Text).Split(' ')[0];
+                    if (numeracion.Length.Equals(1))
+                    {
+                        if (char.IsDigit(numeracion[0]))
+                            item.Text = item.Text.Insert(0, "0");
+                    }
+                }
+
+                // Insertar Punto sino existiese
+                if (item.Text[2] != '.')
+                    item.Text = item.Text.Insert(2, ".");
+                else
                     if (item.Text[3] != ' ')
                         item.Text = item.Text.Insert(3, " ");
-                }
             }
         }
 
